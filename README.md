@@ -23,7 +23,9 @@
 |[luci-app-onliner](https://github.com/danchexiaoyang/luci-app-onliner)|danchexiaoyang|在线设备查看|multi|20240630|
 |[luci-app-easytier](https://github.com/EasyTier/luci-app-easytier)|EasyTier|EasyTier异地组网|multi|20260301|
 |[luci-app-momo](https://github.com/nikkinikki-org/OpenWrt-momo)|nikki-org|momo singbox插件|single|20260131|
-|[fakehttp](https://github.com/yingziwu/openwrt-fakehttp)|yingziwu|FakeHTTP core|single|20250712|
 |[luci-app-fakehttp](https://github.com/yingziwu/luci-app-fakehttp)|yingziwu|FakeHTTP LuCI|single|20250712|
-|[fakesip](https://github.com/blueberry-pie-11/openwrt-fakesip)|blueberry-pie-11|FakeSIP core|single|20250819|
+|[fakehttp](https://github.com/yingziwu/openwrt-fakehttp)|yingziwu|FakeHTTP 依赖|single|20250712|
 |[luci-app-fakesip](https://github.com/blueberry-pie-11/luci-app-fakesip)|blueberry-pie-11|FakeSIP LuCI|single|20250819|
+|[fakesip](https://github.com/blueberry-pie-11/openwrt-fakesip)|blueberry-pie-11|FakeSIP 依赖|single|20250819|
+|[luci-app-bandix](https://github.com/timsaya/luci-app-bandix.git)|timsaya|bandix LuCI|single|20260304|
+|[bandix](https://github.com/timsaya/openwrt-bandix.git)|timsaya|bandix 依赖|single|20260304|
