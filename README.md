@@ -10,7 +10,7 @@
 |[luci-app-mosdns](https://github.com/sbwml/luci-app-mosdns)|sbwml|mosdns|multi|20260216|
 |[luci-app-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki)|nikki-org|nikki mihomo插件|single|20260304|
 |[luci-app-partexp](https://github.com/sirpdboy/luci-app-partexp)|sirpdboy|分区管理|single|20260304|
-|[luci-app-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall)|Openwrt-Passwall|passwall|multi|20260304|
+|[luci-app-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall)|Openwrt-Passwall|passwall|multi|20260305|
 |[luci-app-passwall2](https://github.com/Openwrt-Passwall/openwrt-passwall2)|Openwrt-Passwall|passwall2|multi|20260304|
 |[luci-app-smartdns](https://github.com/pymumu/luci-app-smartdns)|pymumu|smartdns|single|20251219|
 |[luci-app-store](https://github.com/linkease/istore)|linkease|istore 应用市场|multi|20251218|
@@ -28,5 +28,4 @@
 |[luci-app-fakesip](https://github.com/blueberry-pie-11/luci-app-fakesip)|blueberry-pie-11|FakeSIP LuCI|single|20250819|
 |[fakesip](https://github.com/blueberry-pie-11/openwrt-fakesip)|blueberry-pie-11|FakeSIP 依赖|single|20250819|
 |[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260302|
-|[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260302|
-
+|[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260301|
