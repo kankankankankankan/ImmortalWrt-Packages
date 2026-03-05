@@ -27,4 +27,6 @@
 |[fakehttp](https://github.com/yingziwu/openwrt-fakehttp)|yingziwu|FakeHTTP 依赖|single|20250712|
 |[luci-app-fakesip](https://github.com/blueberry-pie-11/luci-app-fakesip)|blueberry-pie-11|FakeSIP LuCI|single|20250819|
 |[fakesip](https://github.com/blueberry-pie-11/openwrt-fakesip)|blueberry-pie-11|FakeSIP 依赖|single|20250819|
-|[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix套件|multi|20260302|
+|[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260302|
+|[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260302|
+
