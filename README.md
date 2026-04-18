@@ -21,7 +21,7 @@
 |[v2ray-geodata](https://github.com/sbwml/v2ray-geodata)|sbwml|mosdns 依赖|single|20250125|
 |[wrtbwmon](https://github.com/brvphoenix/wrtbwmon)|brvphoenix|wrtbwmon 依赖|multi|20201201|
 |[luci-app-onliner](https://github.com/danchexiaoyang/luci-app-onliner)|danchexiaoyang|在线设备查看|multi|20240630|
-|[luci-app-easytier](https://github.com/EasyTier/luci-app-easytier)|EasyTier|EasyTier异地组网|multi|20260417|
+|[luci-app-easytier](https://github.com/EasyTier/luci-app-easytier)|EasyTier|EasyTier异地组网|multi|20260418|
 |[luci-app-momo](https://github.com/nikkinikki-org/OpenWrt-momo)|nikki-org|momo singbox插件|single|20260413|
 |[luci-app-fakehttp](https://github.com/yingziwu/luci-app-fakehttp)|yingziwu|FakeHTTP LuCI|single|20250712|
 |[fakehttp](https://github.com/yingziwu/openwrt-fakehttp)|yingziwu|FakeHTTP 依赖|single|20250712|
