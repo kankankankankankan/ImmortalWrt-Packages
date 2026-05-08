@@ -3,7 +3,7 @@
 
 |软件|作者|功能|包类型|更新日期|
 |:-|:-|:-|:-|:-|
-|[golang](https://github.com/sbwml/packages_lang_golang)|sbwml|golang(geodata、xray 等依赖高版本 go)|single|20260408|
+|[golang](https://github.com/sbwml/packages_lang_golang)|sbwml|golang(geodata、xray 等依赖高版本 go)|single|20260508|
 |[luci-app-adguardhome](https://github.com/rufengsuixing/luci-app-adguardhome)|rufengsuixing|adguardhome|single|20200113|
 |[luci-app-homeproxy](https://github.com/muink/luci-app-homeproxy)|muink|homeproxy 代理|single|20240830|
 |[luci-app-lucky](https://github.com/sirpdboy/luci-app-lucky)|Siriling|Lucky 大吉|single|20260312|
@@ -27,5 +27,5 @@
 |[fakehttp](https://github.com/yingziwu/openwrt-fakehttp)|yingziwu|FakeHTTP 依赖|single|20250712|
 |[luci-app-fakesip](https://github.com/blueberry-pie-11/luci-app-fakesip)|blueberry-pie-11|FakeSIP LuCI|single|20250819|
 |[fakesip](https://github.com/blueberry-pie-11/openwrt-fakesip)|blueberry-pie-11|FakeSIP 依赖|single|20250819|
-|[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260501|
-|[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260425|
+|[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260507|
+|[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260507|
