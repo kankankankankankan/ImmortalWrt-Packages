@@ -30,3 +30,4 @@
 |[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260526|
 |[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260515|
 |[openwrt-daede](https://github.com/kenzok8/openwrt-daede)|kenzok8|dae/daed eBPF 透明代理 + LuCI 管理|single|20260702|
+|[luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora)|eamonxg|Aurora 现代 LuCI 主题|single|20260619|
