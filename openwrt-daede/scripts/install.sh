@@ -391,7 +391,7 @@ echo "Installing (core first, then LuCI)..."
 _install_rc=0
 if [ "$PM" = "opkg" ]; then
   # shellcheck disable=SC2086
-  opkg install $FILES || _install_rc=$?
+  opkg install --force-reinstall $FILES || _install_rc=$?
 else
   echo "[WARN] no stable signing key yet, using --allow-untrusted; sha256 is verified above when the manifest provides it."
   # shellcheck disable=SC2086
