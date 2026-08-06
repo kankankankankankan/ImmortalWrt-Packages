@@ -3,7 +3,6 @@
 
 |软件|作者|功能|包类型|更新日期|
 |:-|:-|:-|:-|:-|
-|[golang](https://github.com/sbwml/packages_lang_golang)|sbwml|golang(geodata、xray 等依赖高版本 go)|single|20260708|
 |[luci-app-adguardhome](https://github.com/rufengsuixing/luci-app-adguardhome)|rufengsuixing|adguardhome|single|20200113|
 |[luci-app-homeproxy](https://github.com/muink/luci-app-homeproxy)|muink|homeproxy 代理|single|20240830|
 |[luci-app-lucky](https://github.com/sirpdboy/luci-app-lucky)|Siriling|Lucky 大吉|single|20260312|
@@ -22,11 +21,12 @@
 |[luci-app-onliner](https://github.com/danchexiaoyang/luci-app-onliner)|danchexiaoyang|在线设备查看|multi|20260430|
 |[luci-app-easytier](https://github.com/EasyTier/luci-app-easytier)|EasyTier|EasyTier异地组网|multi|20260731|
 |[luci-app-momo](https://github.com/nikkinikki-org/OpenWrt-momo)|nikki-org|momo singbox插件|single|20260724|
-|[luci-app-fakehttp](https://github.com/yingziwu/luci-app-fakehttp)|yingziwu|FakeHTTP LuCI|single|20250712|
 |[fakehttp](https://github.com/yingziwu/openwrt-fakehttp)|yingziwu|FakeHTTP 依赖|single|20250712|
-|[luci-app-fakesip](https://github.com/blueberry-pie-11/luci-app-fakesip)|blueberry-pie-11|FakeSIP LuCI|single|20250819|
+|[luci-app-fakehttp](https://github.com/killadm/luci-app-fakehttp)|killadm|FakeHTTP LuCI + core|multi|20260806|
 |[fakesip](https://github.com/blueberry-pie-11/openwrt-fakesip)|blueberry-pie-11|FakeSIP 依赖|single|20250819|
+|[luci-app-fakesip](https://github.com/killadm/luci-app-fakesip)|killadm|FakeSIP LuCI + core|multi|20260806|
 |[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260526|
 |[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260515|
 |[openwrt-daede](https://github.com/kenzok8/openwrt-daede)|kenzok8|dae/daed eBPF 透明代理 + LuCI 管理|single|20260805|
 |[luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora)|eamonxg|Aurora 现代 LuCI 主题|single|20260805|
+|[golang](https://github.com/sbwml/packages_lang_golang)|sbwml|golang(geodata、xray 等依赖高版本 go)|single|20260708|
