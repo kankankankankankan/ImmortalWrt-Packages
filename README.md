@@ -22,9 +22,9 @@
 |[luci-app-easytier](https://github.com/EasyTier/luci-app-easytier)|EasyTier|EasyTier异地组网|multi|20260731|
 |[luci-app-momo](https://github.com/nikkinikki-org/OpenWrt-momo)|nikki-org|momo singbox插件|single|20260724|
 |[fakehttp](https://github.com/yingziwu/openwrt-fakehttp)|yingziwu|FakeHTTP 依赖|single|20250712|
-|[luci-app-fakehttp](https://github.com/killadm/luci-app-fakehttp)|killadm|FakeHTTP LuCI + core|multi|20260806|
+|[luci-app-fakehttp](https://github.com/killadm/luci-app-fakehttp)|killadm|FakeHTTP LuCI + core|multi|20260728|
 |[fakesip](https://github.com/blueberry-pie-11/openwrt-fakesip)|blueberry-pie-11|FakeSIP 依赖|single|20250819|
-|[luci-app-fakesip](https://github.com/killadm/luci-app-fakesip)|killadm|FakeSIP LuCI + core|multi|20260806|
+|[luci-app-fakesip](https://github.com/killadm/luci-app-fakesip)|killadm|FakeSIP LuCI + core|multi|20260730|
 |[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260526|
 |[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260515|
 |[openwrt-daede](https://github.com/kenzok8/openwrt-daede)|kenzok8|dae/daed eBPF 透明代理 + LuCI 管理|single|20260805|

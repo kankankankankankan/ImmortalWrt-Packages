@@ -1,16 +1,16 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
-#
-# Copyright (C) 2025 Yuxi Yang <i@bgme.me>
-
 include $(TOPDIR)/rules.mk
 
-LUCI_TITLE:=LuCI Support for fakesip
-LUCI_DEPENDS:=+luci-base +fakesip
-LUCI_PKGARCH:=all
+PKG_NAME:=luci-app-fakesip
+PKG_VERSION:=0.1.0
+PKG_RELEASE:=1
 
-PKG_MAINTAINER:=Yuxi Yang <i@bgme.me>
+PKG_MAINTAINER:=FakeSIP LuCI feed
 PKG_LICENSE:=GPL-3.0-or-later
-PKG_LICENSE_FILES:=LICENSE
+
+LUCI_TITLE:=LuCI support for FakeSIP
+LUCI_DESCRIPTION:=Web interface to configure and monitor FakeSIP traffic obfuscation
+LUCI_DEPENDS:=+fakesip
+LUCI_PKGARCH:=all
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

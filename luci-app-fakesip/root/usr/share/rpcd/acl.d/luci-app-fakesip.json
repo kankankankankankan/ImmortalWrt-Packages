@@ -1,11 +1,22 @@
 {
-  "luci-app-fakesip": {
-    "description": "Grant UCI and RPC access to LuCI app fakesip",
-    "read": {
-      "uci": ["fakesip"]
-    },
-    "write": {
-      "uci": ["fakesip"]
-    }
-  }
+	"luci-app-fakesip": {
+		"description": "Grant access to LuCI app FakeSIP",
+		"read": {
+			"uci": [ "fakesip" ],
+			"ubus": {
+				"service": [ "list" ]
+			},
+			"file": {
+				"/etc/crontabs/root": [ "read" ],
+				"/usr/libexec/fakesip-logread": [ "exec" ]
+			}
+		},
+		"write": {
+			"uci": [ "fakesip" ],
+			"file": {
+				"/etc/init.d/fakesip": [ "exec" ],
+				"/usr/libexec/fakesip-update": [ "exec" ]
+			}
+		}
+	}
 }
