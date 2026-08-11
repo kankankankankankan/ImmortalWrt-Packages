@@ -9,8 +9,8 @@
 |[luci-app-mosdns](https://github.com/sbwml/luci-app-mosdns)|sbwml|mosdns|multi|20260702|
 |[luci-app-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki)|nikki-org|nikki mihomo插件|single|20260804|
 |[luci-app-partexp](https://github.com/sirpdboy/luci-app-partexp)|sirpdboy|分区管理|single|20260330|
-|[luci-app-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall)|Openwrt-Passwall|passwall|multi|20260810|
-|[luci-app-passwall2](https://github.com/Openwrt-Passwall/openwrt-passwall2)|Openwrt-Passwall|passwall2|multi|20260810|
+|[luci-app-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall)|Openwrt-Passwall|passwall|multi|20260811|
+|[luci-app-passwall2](https://github.com/Openwrt-Passwall/openwrt-passwall2)|Openwrt-Passwall|passwall2|multi|20260811|
 |[luci-app-smartdns](https://github.com/pymumu/luci-app-smartdns)|pymumu|smartdns|single|20260708|
 |[luci-app-store](https://github.com/linkease/istore)|linkease|istore 应用市场|multi|20260806|
 |[luci-app-tailscale](https://github.com/asvow/luci-app-tailscale)|asvow|tailscale|single|20250509|
@@ -25,6 +25,6 @@
 |[luci-app-fakesip](https://github.com/killadm/luci-app-fakesip)|killadm|FakeSIP LuCI + core|single|20260730|
 |[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260526|
 |[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260515|
-|[openwrt-daede](https://github.com/kenzok8/openwrt-daede)|kenzok8|dae/daed eBPF 透明代理 + LuCI 管理|single|20260810|
+|[openwrt-daede](https://github.com/kenzok8/openwrt-daede)|kenzok8|dae/daed eBPF 透明代理 + LuCI 管理|single|20260811|
 |[luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora)|eamonxg|Aurora 现代 LuCI 主题|single|20260808|
 |[golang](https://github.com/sbwml/packages_lang_golang)|sbwml|golang(geodata、xray 等依赖高版本 go)|single|20260708|
