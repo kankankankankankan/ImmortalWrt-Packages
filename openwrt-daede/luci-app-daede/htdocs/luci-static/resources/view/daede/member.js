@@ -99,9 +99,11 @@ function render(ctx) {
 	let card;
 	const modeBadge = E('span', { 'class': 'dd-member-mode' + (state.mode === 'cloud' ? ' dd-member-mode-cloud' : '') });
 	function updateMode() {
-		modeBadge.textContent = state.mode === 'cloud' ? '云端配置' : '本地配置';
-		modeBadge.className = 'dd-member-mode' + (state.mode === 'cloud' ? ' dd-member-mode-cloud' : '');
-		modeBadge.title = state.mode === 'cloud' ? '规则由会员服务同步，本地编辑已锁定' : '规则由本地表单或配置编辑器管理';
+		const cloud = state.logged_in && state.mode === 'cloud';
+		modeBadge.textContent = state.logged_in ? (cloud ? '云端配置' : '本地配置') : '';
+		modeBadge.className = 'dd-member-mode' + (cloud ? ' dd-member-mode-cloud' : '');
+		modeBadge.hidden = !state.logged_in;
+		modeBadge.title = cloud ? '规则由会员服务同步，本地编辑已锁定' : '';
 	}
 	updateMode();
 	const memberName = E('span', { 'class': 'dd-member-name' });
@@ -110,6 +112,17 @@ function render(ctx) {
 	const url = E('input', { 'type': 'url', 'class': 'cbi-input-text', 'placeholder': 'https://规则系统域名', 'value': state.url || '', 'autocomplete': 'url' });
 	const username = E('input', { 'type': 'text', 'class': 'cbi-input-text', 'autocomplete': 'username' });
 	const password = E('input', { 'type': 'password', 'class': 'cbi-input-password', 'autocomplete': 'current-password' });
+	function normalizeOrigin(value) {
+		try {
+			const parsed = new URL(value.trim());
+			if (parsed.protocol !== 'https:') throw new Error('会员服务地址必须使用 HTTPS');
+			if (parsed.username || parsed.password || parsed.search || parsed.hash) throw new Error('会员服务地址不能包含账号、参数或锚点');
+			return parsed.origin;
+		} catch (e) {
+			if (e.message === '会员服务地址必须使用 HTTPS' || e.message === '会员服务地址不能包含账号、参数或锚点') throw e;
+			throw new Error('请输入有效的 HTTPS 会员服务地址');
+		}
+	}
 	const lan = E('select', { 'class': 'cbi-input-select' });
 	lan.appendChild(E('option', { 'value': '' }, '请选择 LAN 接口'));
 	(ctx.netDevs || []).forEach(function(name) { lan.appendChild(E('option', { 'value': name }, name)); });
@@ -123,7 +136,7 @@ function render(ctx) {
 	const feedback = E('p', { 'class': 'dd-member-feedback', 'role': 'status', 'aria-live': 'polite' }, ctx.memberError || (state.logged_in ? state.warning : '') || ctx.memberRefreshNote || recommendation.message || '');
 	const buttons = [];
 	function action(label, handler, primary) {
-		const button = E('button', { 'type': 'button', 'class': 'cbi-button ' + (primary ? 'cbi-button-action' : 'cbi-button-neutral') }, label);
+		const button = E('button', { 'type': 'button', 'class': 'cbi-button ' + (primary ? 'cbi-button-action' : 'cbi-button-neutral'), 'aria-label': label }, label);
 		button.addEventListener('click', function() {
 			const previous = buttons.map(function(b) { return b.disabled; });
 			buttons.forEach(function(b) { b.disabled = true; });
@@ -154,6 +167,7 @@ function render(ctx) {
 				memberState: result.state, memberError: result.error, memberRefreshNote: notice
 			}));
 			card.replaceWith(next);
+			if (typeof document !== 'undefined') document.dispatchEvent(new CustomEvent('daede-member-state', { detail: result.state }));
 			if (typeof window.scrollTo === 'function') window.scrollTo({ left: x, top: y, behavior: 'instant' });
 		});
 	}
@@ -180,7 +194,8 @@ function render(ctx) {
 	const signIn = action(state.logged_in ? '重新登录' : '登录会员', function() {
 		if (!url.value.trim() || !username.value.trim() || !password.value || !lan.value)
 			throw new Error('请填写系统地址、账号、密码并选择 LAN 接口');
-		const origin = url.value.trim(), selected = lan.value;
+		const origin = normalizeOrigin(url.value), selected = lan.value;
+		url.value = origin;
 		return login({ url: origin, username: username.value.trim(), password: password.value, lan_interface: selected }).then(function() {
 			password.value = '';
 			return refreshMember(Object.assign({}, state, {
@@ -196,7 +211,7 @@ function render(ctx) {
 			feedback.textContent = '已选择推荐接口，登录后生效；现有运行配置尚未修改。';
 		}
 	});
-	const sync = action('同步并启用', function() {
+	const sync = action('应用云端配置', function() {
 		return invoke('sync').then(function(result) {
 			state.logged_in = true;
 			state.mode = 'cloud';
@@ -205,6 +220,7 @@ function render(ctx) {
 			state.warning = result.warning || '';
 			stateLine.textContent = stateText();
 			local.hidden = false;
+			if (typeof document !== 'undefined') document.dispatchEvent(new CustomEvent('daede-member-state', { detail: state }));
 			feedback.textContent = state.warning || '同步成功，dae 已启用并开始运行。';
 		});
 	}, true);
@@ -231,7 +247,7 @@ function render(ctx) {
 	const credentials = E('div', { 'class': 'dd-member-fields', 'style': state.logged_in ? 'display:none' : '' }, [
 		field('系统地址', url),
 		E('div', { 'class': 'dd-member-grid' }, [field('账号', username), field('密码', password), field('LAN 接口', lan)]),
-		E('div', { 'class': 'dd-member-actions' }, [signIn, recommend, logout]),
+		E('div', { 'class': 'dd-member-actions' }, [signIn, logout, recommend]),
 		E('p', { 'class': 'dd-member-note' }, '密码仅用于本次登录，不会保存。')
 	]);
 	const settings = E('button', { 'type': 'button', 'class': 'cbi-button cbi-button-neutral' }, '账户设置');
@@ -248,7 +264,8 @@ function render(ctx) {
 		stateLine,
 		renderUsage(ctx),
 		credentials,
-		E('div', { 'class': 'dd-member-actions' }, [sync, settings, local]),
+		E('div', { 'class': 'dd-member-actions' }, [sync, local, settings]),
+		E('p', { 'class': 'dd-member-note' }, state.logged_in && state.mode === 'cloud' ? '当前由云端统一管理规则；如需手动修改，请先切换到本地编辑。' : '登录会员后可使用云端规则；本地模式下可手动调整配置。'),
 		feedback
 	]);
 	return card;
