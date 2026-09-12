@@ -23,9 +23,11 @@ function setup(response = { ok: true, mode: 'local' }) {
     write: async (path, body, mode) => { calls.push({ path, body, mode }); },
     remove: async (path) => { calls.push({ remove: path }); }
   };
+  const document = { listeners: {}, addEventListener(event, fn) { this.listeners[event] = fn; }, dispatchEvent(event) { if (this.listeners[event.type]) this.listeners[event.type](event); } };
   const window = { crypto: webcrypto, location: { reload() { calls.push({ reload: true }); } } };
-  const api = new Function('baseclass', 'fs', 'ui', 'window', 'E', source)({ extend: o => o }, fs, {}, window, E);
-  return { api, calls, elements, fs };
+  const CustomEvent = function(type, init) { this.type = type; this.detail = init && init.detail; };
+  const api = new Function('baseclass', 'fs', 'ui', 'window', 'document', 'CustomEvent', 'E', source)({ extend: o => o }, fs, {}, window, document, CustomEvent, E);
+  return { api, calls, elements, fs, document };
 }
 
 function textOf(node) {
@@ -208,10 +210,19 @@ test('failed login clears input and removes staging file without reload', async 
   assert.equal(s.elements.find(e => e.attrs.role === 'status').textContent, '登录失败');
 });
 
+test('applying cloud config emits state change for immediate page simplification', async () => {
+  const s = setup({ ok: true, warning: '' });
+  let emitted;
+  s.document.addEventListener('daede-member-state', e => { emitted = e.detail; });
+  s.api.render({ memberState: { logged_in: true, mode: 'local' }, netDevs: ['br-lan'] });
+  s.elements.find(e => e.textContent === '应用云端配置').listeners.click();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(emitted.mode, 'cloud');
+});
 test('successful clean sync updates the rule status and cloud badge immediately', async () => {
   const s = setup({ ok: true, warning: '', last_sync: '2026-09-12T10:00:00Z' });
   s.api.render({ memberState: { logged_in: true, mode: 'local', warning: 'old warning', last_sync: '2026-09-11T00:00:00Z' }, netDevs: ['br-lan'] });
-  s.elements.find(e => e.textContent === '同步并启用').listeners.click();
+  s.elements.find(e => e.textContent === '应用云端配置').listeners.click();
   await new Promise(resolve => setImmediate(resolve));
   assert.match(s.elements.find(e => e.attrs.class === 'dd-member-state').textContent, /规则状态：已加载/);
   assert.ok(s.elements.some(e => e.textContent === '云端配置'));
@@ -220,7 +231,7 @@ test('successful clean sync updates the rule status and cloud badge immediately'
 test('sync is disabled when logged out or helper unavailable', () => {
   for (const ctx of [{ memberState: {} }, { memberState: { logged_in: true }, memberError: 'unavailable' }]) {
     const s = setup(); s.api.render({ ...ctx, netDevs: ['br-lan'] });
-    assert.equal(s.elements.find(e => e.textContent === '同步并启用').disabled, true);
+    assert.equal(s.elements.find(e => e.textContent === '应用云端配置').disabled, true);
   }
 });
 
