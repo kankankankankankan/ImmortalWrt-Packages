@@ -42,23 +42,20 @@ jobs:
           echo "message=$(date +'%Y-%m-%d_%H%M%S')" >> $GITHUB_OUTPUT
 
       - name: Commit
-        id: commit
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
-          # 2026-09-22: no-op scheduled syncs must complete successfully.
-          if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
-            echo "nothing to commit, working tree clean"
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+          status=$(git status -sb)
+          if [ "$status" == "## main...origin/main" ];then
+              echo "nothing to commit, working tree clean"
+              exit 0
           else
-            git add .
-            git commit -m "Sync $(TZ='Asia/Shanghai' date +%Y-%m-%d" "%H:%M:%S)"
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+          git add .
+          git commit -m "Sync $(TZ='Asia/Shanghai' date +%Y-%m-%d" "%H:%M:%S)"
           fi
         
       - name: Push changes
-        if: steps.commit.outputs.changed == 'true'
         uses: ad-m/github-push-action@master
         with:
           branch: main      
