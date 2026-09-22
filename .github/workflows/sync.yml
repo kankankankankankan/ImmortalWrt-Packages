@@ -49,10 +49,9 @@ jobs:
           status=$(git status -sb)
           if [ "$status" == "## main...origin/main" ];then
               echo "nothing to commit, working tree clean"
-              exit 0
           else
           git add .
-          git commit -m "Sync $(TZ='Asia/Shanghai' date +%Y-%m-%d" "%H:%M:%S)"
+          git commit -m "Sync $(TZ='Asia/Shanghai' date +%Y-%m-%d" "%H:%M:%S)" || [ -z "$(git status --porcelain)" ]
           fi
         
       - name: Push changes
