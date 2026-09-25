@@ -311,6 +311,9 @@ msgstr "最新"
 msgid "up to date"
 msgstr "已是最新"
 
+msgid "based on upstream"
+msgstr "基于上游"
+
 msgid "not installed via package manager"
 msgstr "非包管理器安装"
 
@@ -371,6 +374,9 @@ msgstr "dae 热重载可用"
 
 msgid "netns daens removed."
 msgstr "netns daens 已清理。"
+
+msgid "in use by daed"
+msgstr "daed 运行中，正在使用"
 
 msgid "exists, may block daed start"
 msgstr "已存在，可能阻碍 daed 启动"

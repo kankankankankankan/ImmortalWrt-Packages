@@ -47,7 +47,7 @@ const CSS = [
 	'.dd-up-warn{color:#d39e00}',
 	'.dd-up-new{color:#4a8cff}',
 	'.dd-up-err{color:#d96d6d}',
-	'.dd-up-name{font-weight:600;opacity:.85}',
+	'.dd-up-name{font-weight:600;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
 	'.dd-up-meta{opacity:.7;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
 	'.dd-up-version{font-size:11px;opacity:.55;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:nowrap}',
 	'.dd-up-btn{font-size:11px;line-height:1.4;min-height:0;height:auto;padding:4px 12px;border-radius:5px;border:1px solid rgba(128,128,128,.35);background:transparent;color:inherit;cursor:pointer;white-space:nowrap}',
@@ -378,12 +378,19 @@ return view.extend({
 				});
 
 				// pkg rows
+				const EDITION = uci.get('daede', 'config', 'edition') || '';
+				const UPSTREAM_BASE = uci.get('daede', 'config', 'upstream_base') || '';
 				while (pkgBody.firstChild) pkgBody.removeChild(pkgBody.firstChild);
 				corePkgs.map(function(pkg) {
 					const label = _('%s binary').format(pkg) + (ctx.name === pkg ? ' · ' + _('active') : '');
 					return { k: pkg, name: label, r: coreInfo[pkg] };
 				}).concat([
-					{ k: 'luci-app-daede', name: 'luci-app-daede', r: luci }
+					{
+						k: 'luci-app-daede',
+						name: 'luci-app-daede' + (EDITION ? ' · ' + EDITION : ''),
+						base: UPSTREAM_BASE,
+						r: luci
+					}
 				]).forEach(function(entry) {
 					const btn = E('button', { 'class': 'dd-up-btn dd-up-btn-primary' }, _('Upgrade'));
 					btn.addEventListener('click', function() { upgradePkg(entry.k, btn); });
@@ -409,6 +416,8 @@ return view.extend({
 						meta = _('installed') + ': ' + entry.r.installed + ' · ' + _('up to date');
 						btn.disabled = true;
 					}
+					if (entry.base)
+						meta += ' · ' + _('based on upstream') + ' ' + entry.base;
 					pkgBody.appendChild(mkRow(
 						updatable ? '↑' : (entry.r.installed ? '✓' : '✗'),
 						updatable ? 'dd-up-new' : (entry.r.installed ? 'dd-up-ok' : 'dd-up-err'),
@@ -447,17 +456,19 @@ return view.extend({
 					healthBody.appendChild(mkRow('✓', 'dd-up-ok', _('Hot reload'), _('/etc/init.d/dae hot_reload is available')));
 				}
 
-				if (ctx.backend.useNetns && ns && ns.exists) {
+				if (ctx.backend.useNetns && ns && ns.exists && running[ctx.name]) {
+					healthBody.appendChild(mkRow('✓', 'dd-up-ok', _('netns daens'), HEALTH_PATHS.netns + ' · ' + _('in use by daed')));
+				} else if (ctx.backend.useNetns && ns && ns.exists) {
 					const btn = E('button', { 'class': 'dd-up-btn' }, _('Clean'));
 					btn.addEventListener('click', function() {
-						const daedRunning = !!(running && running[ctx.name]);
-						const msg = daedRunning
-							? _('%s is running. Deleting the daens netns now will break its networking until you restart it. Continue?').format(ctx.name)
-							: _('Delete the daens netns?');
-						if (!confirm(msg))
-							return;
 						btn.disabled = true;
-						fs.exec('/sbin/ip', ['netns', 'del', 'daens']).finally(function() { btn.disabled = false; });
+						backend.detectRunning().then(function(now) {
+							const msg = now[ctx.name]
+								? _('%s is running. Deleting the daens netns now will break its networking until you restart it. Continue?').format(ctx.name)
+								: _('Delete the daens netns?');
+							if (confirm(msg))
+								return fs.exec('/sbin/ip', ['netns', 'del', 'daens']);
+						}).finally(function() { btn.disabled = false; });
 					});
 					healthBody.appendChild(mkRow('⚠', 'dd-up-warn', _('netns daens'), HEALTH_PATHS.netns + ' · ' + _('exists, may block daed start'), btn));
 				} else if (ctx.backend.useNetns) {
