@@ -13,7 +13,6 @@
 |[luci-app-passwall2](https://github.com/Openwrt-Passwall/openwrt-passwall2)|Openwrt-Passwall|passwall2|multi|20260925|
 |[luci-app-smartdns](https://github.com/pymumu/luci-app-smartdns)|pymumu|smartdns|single|20260708|
 |[luci-app-store](https://github.com/linkease/istore)|linkease|istore 应用市场|multi|20260925|
-|[luci-app-tailscale-community](https://github.com/Tokisaki-Galaxy/luci-app-tailscale-community)|Tokisaki-Galaxy|tailscale|multi|20260917|
 |[luci-app-wrtbwmon](https://github.com/brvphoenix/luci-app-wrtbwmon)|brvphoenix|在线设备流量监控|multi|20240217|
 |[passwall-packages](https://github.com/Openwrt-Passwall/openwrt-passwall-packages)|Openwrt-Passwall|passwall、passwall2 依赖|multi|20260925|
 |[v2ray-geodata](https://github.com/sbwml/v2ray-geodata)|sbwml|mosdns 依赖|single|20250125|
