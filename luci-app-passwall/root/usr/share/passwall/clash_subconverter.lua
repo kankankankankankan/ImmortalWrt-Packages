@@ -590,14 +590,73 @@ local function encode_snell(node)
 	return 0, link .. "#" .. urlencode(node.name or "")
 end
 
+local function build_local_address(node)
+	local addresses = {}
+	for _, field in ipairs({ "ip", "ipv6" }) do
+		local value = node[field]
+		if value and value ~= "" then
+			addresses[#addresses + 1] = value:find("/", 1, true) and value or value .. (field == "ip" and "/32" or "/128")
+		end
+	end
+	return table.concat(addresses, ",")
+end
+
+-- WireGuard
+local function encode_wireguard(node)
+	if node["amnezia-wg-option"] then
+		return 1, "订阅转换 → 丢弃 WireGuard 节点：" .. node.name .. "，当前 Core 不支持 AmneziaWG。"
+	end
+	local link = "wireguard://" .. urlencode(node["private-key"]) .. "@" .. host_format(node.server) .. ":" .. node.port
+	local p = {}
+
+	add_param(p, "publickey", node["public-key"])
+	add_param(p, "presharedkey", node["pre-shared-key"])
+	add_param(p, "address", build_local_address(node))
+	add_param(p, "reserved", type(node.reserved) == "table" and table.concat(node.reserved, ",") or node.reserved)
+	add_param(p, "mtu", tonumber(node.mtu) ~= 0 and node.mtu or 1408)
+	add_param(p, "persistent-keepalive", node["persistent-keepalive"])
+
+	if #p > 0 then
+		link = link .. "?" .. table.concat(p, "&")
+	end
+
+	return 0, link .. "#" .. urlencode(node.name or "")
+end
+
+-- MASQUE
+local function encode_masque(node)
+	if node.network == "h3-l4proxy" then
+		return 1, "订阅转换 → 丢弃 MASQUE 节点：" .. node.name .. "，当前 Core 不支持 h3-l4proxy 传输。"
+	end
+	local link = "masque://" .. urlencode(node["private-key"]) .. "@" .. host_format(node.server) .. ":" .. node.port
+	local p = {}
+
+	add_param(p, "publickey", node["public-key"])
+	add_param(p, "address", build_local_address(node))
+	add_param(p, "alpn", node.network == "h2" and "h2" or "h3")
+	add_param(p, "sni", node.sni ~= "" and node.sni or "consumer-masque.cloudflareclient.com")
+	add_param(p, "path", node.uri and node.uri:match("^https?://[^/]+(/.*)$"))
+
+	if #p > 0 then
+		link = link .. "?" .. table.concat(p, "&")
+	end
+
+	return 0, link .. "#" .. urlencode(node.name or "")
+end
+
 local function encode_node(node)
 	if type(node) ~= "table" or not node.type or not node.name then
 		return 1, "订阅转换 → 跳过格式不完整的节点。"
 	end
+	node = inherit(node)
+	if node.type == "wireguard" and node.peers and #node.peers > 0 then
+		local peer = node.peers[1]
+		node.server, node.port = peer.server, peer.port
+		node["public-key"], node["pre-shared-key"], node.reserved = peer["public-key"], peer["pre-shared-key"], peer.reserved
+	end
 	if not node.server or node.server == "" or not (node.port or (node.type == "hysteria2" and node.ports)) then
 		return 1, "订阅转换 → 丢弃节点：" .. tostring(node.name) .. "，节点信息不完整。"
 	end
-	node = inherit(node)
 
 	local t = node.type
 	if t == "hysteria" or t == "hysteria2" then
@@ -620,12 +679,125 @@ local function encode_node(node)
 	elseif t == "anytls" then return encode_anytls(node)
 	elseif t == "ssr" then return encode_ssr(node)
 	elseif t == "snell" then return encode_snell(node)
+	elseif t == "wireguard" then return encode_wireguard(node)
+	elseif t == "masque" then return encode_masque(node)
 	else api.log("订阅转换 → 丢弃不支持的节点：" .. node.name .. "，节点类型：" .. t)
 	end
 end
 
-function parseClashNode(raw, remark)
-	if not raw then return "" end 
+local function parse_dns_endpoint(value)
+	if type(value) ~= "string" then return nil end
+	value = api.trim(value)
+	-- Clash fragments and URL queries cannot be preserved by both node DNS backends.
+	if value == "" or value:find("[%s#?@,]") then return nil end
+	local url = value:find("://", 1, true) and value or "udp://" .. value
+	local ok, endpoint = pcall(api.parseURL, url)
+	if not ok or not endpoint then return nil end
+	local protocol = endpoint.protocol
+	if protocol ~= "udp" and protocol ~= "tcp" and protocol ~= "https" then return nil end
+	local host = endpoint.hostname
+	if not host or not (api.is_ip(host) or api.datatypes.hostname(host)) then return nil end
+	local bracketed = endpoint.host:sub(1, 1) == "["
+	local ipv6 = api.datatypes.ip6addr(host)
+	if bracketed and not ipv6 then return nil end
+	if protocol == "https" and ipv6 and not bracketed then return nil end
+	local port = endpoint.port or (protocol == "https" and 443 or 53)
+	if port < 1 or port > 65535 then return nil end
+	if protocol ~= "https" and endpoint.pathname then return nil end
+	return { protocol = protocol, host = host:lower():gsub("%.$", ""), port = port, url = url }
+end
+
+local function is_loopback_dns(host)
+	return host == "localhost" or (api.datatypes.ip4addr(host) and host:match("^127%.")) or host:match("^[0:]+:0*1$")
+end
+
+local function is_unspecified_dns(host)
+	return host == "0.0.0.0" or host:match("^[0:]+$")
+end
+
+local function extract_clash_dns(data, nodes)
+	local dns = data.dns
+	if type(dns) ~= "table" or not dns["proxy-server-nameserver"] then return nil end
+	local nameservers = dns["proxy-server-nameserver"]
+	if (type(nameservers) ~= "table" or #nameservers == 0) and (type(nameservers) ~= "string" or api.trim(nameservers) == "") then return nil end
+	local listener = parse_dns_endpoint(dns.listen)
+	local resolving = {}
+	local policy = dns["nameserver-policy"]
+	local has_policy = type(policy) == "table" and next(policy)
+	local function pick(candidates, depth)
+		if depth > 4 then return nil end
+		if type(candidates) == "string" then candidates = { candidates } end
+		if type(candidates) ~= "table" then return nil end
+		for _, value in ipairs(candidates) do
+			local endpoint = parse_dns_endpoint(value)
+			if endpoint and not is_unspecified_dns(endpoint.host) then
+				if is_loopback_dns(endpoint.host) then
+					local key = endpoint.protocol .. "://" .. endpoint.host .. ":" .. endpoint.port
+					local listen_matches = listener and listener.protocol ~= "https" and listener.port == endpoint.port and (
+						listener.host == endpoint.host or
+						(listener.host == "0.0.0.0" and not endpoint.host:find(":", 1, true)) or
+						(is_unspecified_dns(listener.host) and listener.host ~= "0.0.0.0" and endpoint.host:find(":", 1, true)) or
+						(endpoint.host == "localhost" and is_loopback_dns(listener.host)))
+					if endpoint.protocol ~= "https" and dns.enable == true and listen_matches and not resolving[key] and not has_policy then
+						resolving[key] = true
+						local resolver = pick(dns.nameserver, depth + 1)
+						resolving[key] = nil
+						if resolver then return resolver end
+					end
+				elseif endpoint.protocol == "https" then
+					return { domain_resolver = "https", domain_resolver_dns_https = endpoint.url }
+				elseif api.datatypes.ip4addr(endpoint.host) then
+					return { domain_resolver = endpoint.protocol, domain_resolver_dns = endpoint.host .. ":" .. endpoint.port }
+				end
+			end
+		end
+	end
+	local logged = {}
+	local function log_resolver(resolver)
+		if not resolver then return end
+		local address = resolver.domain_resolver_dns_https or resolver.domain_resolver .. "://" .. resolver.domain_resolver_dns
+		if not logged[address] then
+			api.log("订阅转换 → 已提取节点域名 DNS：" .. address)
+			logged[address] = true
+		end
+	end
+	local resolver = pick(nameservers, 0)
+	local node_policy = dns["proxy-server-nameserver-policy"]
+	if node_policy ~= nil and type(node_policy) ~= "table" then return nil end
+	if type(node_policy) == "table" and next(node_policy) then
+		local exact, wildcard = {}, {}
+		for pattern, candidates in pairs(node_policy) do
+			if type(pattern) ~= "string" then return nil end
+			pattern = api.trim(pattern):lower():gsub("%.$", "")
+			local suffix = pattern:match("^%*%.(.+)$")
+			local domain, rules = suffix or pattern, suffix and wildcard or exact
+			-- 遇到不支持的规则集、geosite 等策略时跳过自动 DNS 提取。
+			if not api.datatypes.hostname(domain) or domain:find("[*+:]") or rules[domain] then return nil end
+			rules[domain] = { resolver = pick(candidates, 0) }
+		end
+		local node_resolvers = {}
+		for _, node in ipairs(nodes) do
+			local host = node.type == "wireguard" and node.peers and node.peers[1] and node.peers[1].server or node.server
+			if type(host) == "string" then
+				host = (domain_redir[host] or host):lower():gsub("%.$", "")
+				if not api.is_ip(host) then
+					-- 优先匹配完整域名，'*' 仅匹配一层子域名。
+					local rule = exact[host] or wildcard[host:match("^[^.]+%.(.+)$")]
+					local selected = resolver
+					if rule then selected = rule.resolver end
+					node_resolvers[host] = selected
+					log_resolver(selected)
+				end
+			end
+		end
+		return next(node_resolvers) and { nodes = node_resolvers } or nil
+	end
+	log_resolver(resolver)
+	return resolver
+end
+
+function parseClashNode(raw, remark, auto_dns)
+	if not raw then return "" end
 	domain_redir = {}
 	local ok, lyaml = pcall(require, "lyaml")
 	if not ok then return raw end
@@ -649,7 +821,7 @@ function parseClashNode(raw, remark)
 		end
 	end
 
-	local links = {}
+	local links, nodes = {}, {}
 	for _, node in ipairs(data.proxies) do
 		local converted, err, link = pcall(encode_node, node)
 		if not converted then
@@ -659,10 +831,12 @@ function parseClashNode(raw, remark)
 			api.log(link)
 		elseif link then
 			table.insert(links, link)
+			table.insert(nodes, node)
 		end
 	end
 
-	return #links > 0 and table.concat(links, "\n") or ""
+	local resolver = #links > 0 and auto_dns and extract_clash_dns(data, nodes) or nil
+	return #links > 0 and table.concat(links, "\n") or "", resolver
 end
 
 function parse_clash_sub_info(headers)

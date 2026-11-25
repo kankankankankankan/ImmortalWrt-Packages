@@ -6,15 +6,15 @@
 |[luci-app-adguardhome](https://github.com/rufengsuixing/luci-app-adguardhome)|rufengsuixing|adguardhome|single|20200113|
 |[luci-app-homeproxy](https://github.com/muink/luci-app-homeproxy)|muink|homeproxy 代理|single|20240830|
 |[luci-app-lucky](https://github.com/sirpdboy/luci-app-lucky)|Siriling|Lucky 大吉|single|20260312|
-|[luci-app-mosdns](https://github.com/sbwml/luci-app-mosdns)|sbwml|mosdns|multi|20260913|
-|[luci-app-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki)|nikki-org|nikki mihomo插件|single|20261014|
-|[luci-app-partexp](https://github.com/sirpdboy/luci-app-partexp)|sirpdboy|分区管理|single|20260330|
-|[luci-app-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall)|Openwrt-Passwall|passwall|multi|20261024|
-|[luci-app-passwall2](https://github.com/Openwrt-Passwall/openwrt-passwall2)|Openwrt-Passwall|passwall2|multi|20261024|
-|[luci-app-smartdns](https://github.com/pymumu/luci-app-smartdns)|pymumu|smartdns|single|20260708|
+|[luci-app-mosdns](https://github.com/sbwml/luci-app-mosdns)|sbwml|mosdns|multi|20261115|
+|[luci-app-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki)|nikki-org|nikki mihomo插件|single|20261112|
+|[luci-app-partexp](https://github.com/sirpdboy/luci-app-partexp)|sirpdboy|分区管理|single|20261030|
+|[luci-app-passwall](https://github.com/Openwrt-Passwall/openwrt-passwall)|Openwrt-Passwall|passwall|multi|20261123|
+|[luci-app-passwall2](https://github.com/Openwrt-Passwall/openwrt-passwall2)|Openwrt-Passwall|passwall2|multi|20261124|
+|[luci-app-smartdns](https://github.com/pymumu/luci-app-smartdns)|pymumu|smartdns|single|20261102|
 |[luci-app-store](https://github.com/linkease/istore)|linkease|istore 应用市场|multi|20260925|
 |[luci-app-wrtbwmon](https://github.com/brvphoenix/luci-app-wrtbwmon)|brvphoenix|在线设备流量监控|multi|20240217|
-|[passwall-packages](https://github.com/Openwrt-Passwall/openwrt-passwall-packages)|Openwrt-Passwall|passwall、passwall2 依赖|multi|20261024|
+|[passwall-packages](https://github.com/Openwrt-Passwall/openwrt-passwall-packages)|Openwrt-Passwall|passwall、passwall2 依赖|multi|20261124|
 |[v2ray-geodata](https://github.com/sbwml/v2ray-geodata)|sbwml|mosdns 依赖|single|20250125|
 |[wrtbwmon](https://github.com/brvphoenix/wrtbwmon)|brvphoenix|wrtbwmon 依赖|multi|20201201|
 |[luci-app-onliner](https://github.com/danchexiaoyang/luci-app-onliner)|danchexiaoyang|在线设备查看|multi|20260430|
@@ -22,8 +22,8 @@
 |[luci-app-momo](https://github.com/nikkinikki-org/OpenWrt-momo)|nikki-org|momo singbox插件|single|20261014|
 |[luci-app-fakehttp](https://github.com/killadm/luci-app-fakehttp)|killadm|FakeHTTP LuCI + core|single|20260728|
 |[luci-app-fakesip](https://github.com/killadm/luci-app-fakesip)|killadm|FakeSIP LuCI + core|single|20260730|
-|[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20260928|
-|[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20260928|
+|[luci-app-bandix](https://github.com/timsaya/luci-app-bandix)|timsaya|bandix|single|20261027|
+|[openwrt-bandix](https://github.com/timsaya/openwrt-bandix)|timsaya|bandix 依赖|single|20261027|
 |[openwrt-daede](https://github.com/kankankankankankan/openwrt-daede)|kenzok8|dae/daed eBPF 透明代理 + LuCI 管理|single|20261021|
-|[luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora)|eamonxg|Aurora 现代 LuCI 主题|single|20260920|
-|[golang](https://github.com/sbwml/packages_lang_golang)|sbwml|golang(geodata、xray 等依赖高版本 go)|single|20261020|
+|[luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora)|eamonxg|Aurora 现代 LuCI 主题|single|20261104|
+|[golang](https://github.com/sbwml/packages_lang_golang)|sbwml|golang(geodata、xray 等依赖高版本 go)|single|20261111|

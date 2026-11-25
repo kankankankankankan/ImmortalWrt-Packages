@@ -190,12 +190,12 @@ function socks_autoswitch_add_node()
 		uci_set(id, "enable_autoswitch", "1")
 		local new_list = uci_get(id, "autoswitch_backup_node") or {}
 		for i = #new_list, 1, -1 do
-			if (uci_get(new_list[i], "remarks") or ""):find(key) then
+			if (uci_get(new_list[i], "remarks") or ""):find(key, 1, true) then
 				table.remove(new_list, i)
 			end
 		end
 		for k, e in ipairs(api.get_valid_nodes()) do
-			if e.node_type == "normal" and e["remark"]:find(key) then
+			if e.node_type == "normal" and e["remark"]:find(key, 1, true) then
 				table.insert(new_list, e.id)
 			end
 		end
@@ -212,7 +212,7 @@ function socks_autoswitch_remove_node()
 		uci_set(id, "enable_autoswitch", "1")
 		local new_list = uci_get(id, "autoswitch_backup_node") or {}
 		for i = #new_list, 1, -1 do
-			if (uci_get(new_list[i], "remarks") or ""):find(key) then
+			if (uci_get(new_list[i], "remarks") or ""):find(key, 1, true) then
 				table.remove(new_list, i)
 			end
 		end
@@ -386,6 +386,7 @@ function socks_status()
 	e.socks_status = luci.sys.call(string.format("/bin/busybox top -bn1 | grep -v -E 'grep|acl/|acl_' | grep '%s/bin/' | grep '/%s' > /dev/null", appname, id)) == 0
 	local use_http = uci_get(id, "http_port") or 0
 	e.use_http = 0
+	e.http_status = false
 	if tonumber(use_http) > 0 then
 		e.use_http = 1
 		e.http_status = luci.sys.call(string.format("/bin/busybox top -bn1 | grep -v -E 'grep|acl/|acl_' | grep '%s/bin/' | grep '/%s' | grep -E '\\+http|_http' > /dev/null", appname, id)) == 0
@@ -407,7 +408,7 @@ function connect_status()
 	local proxy_mode = uci_get("@global[0]", "tcp_proxy_mode") or "proxy"
 	local localhost_proxy = uci_get("@global[0]", "localhost_proxy") or "1"
 	local socks_server = (localhost_proxy == "0") and api.get_cache_var("GLOBAL_SOCKS_server") or ""
-	local curl_args = "-w '%{http_code}:%{time_pretransfer}:%{time_starttransfer}' " .. util.shellquote(url)
+	local curl_args = "-A 'Mozilla/5.0' -w '%{http_code}:%{time_pretransfer}:%{time_starttransfer}' " .. util.shellquote(url)
 	if socks_server and socks_server ~= "" then
 		if (chn_list == "proxy" and gfw_list == "0" and proxy_mode ~= "proxy" and aliyun ~= nil) or (chn_list == "0" and gfw_list == "0" and proxy_mode == "proxy") then
 		-- 中国列表+阿里 or 全局
@@ -886,17 +887,17 @@ function read_rulelist()
 end
 
 local backup_files = {
-    "/etc/config/passwall",
-    "/etc/config/passwall_server",
-    "/etc/passwall/rules/block_host",
-    "/etc/passwall/rules/block_ip",
-    "/etc/passwall/rules/direct_host",
-    "/etc/passwall/rules/direct_ip",
-    "/etc/passwall/rules/proxy_host",
-    "/etc/passwall/rules/proxy_ip",
-    "/etc/passwall/rules/lanlist_ipv4",
-    "/etc/passwall/rules/lanlist_ipv6",
-    "/etc/passwall/rules/domains_excluded"
+	"/etc/config/passwall",
+	"/etc/config/passwall_server",
+	"/etc/passwall/rules/block_host",
+	"/etc/passwall/rules/block_ip",
+	"/etc/passwall/rules/direct_host",
+	"/etc/passwall/rules/direct_ip",
+	"/etc/passwall/rules/proxy_host",
+	"/etc/passwall/rules/proxy_ip",
+	"/etc/passwall/rules/lanlist_ipv4",
+	"/etc/passwall/rules/lanlist_ipv6",
+	"/etc/passwall/rules/domains_excluded"
 }
 
 function create_backup()
